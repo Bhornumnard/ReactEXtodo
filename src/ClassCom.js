@@ -7,6 +7,7 @@ class Class1 extends React.Component {
         color: true,
         text: "",
         data: [],
+        textEdit: ""
 
     }
     decrement = () => {
@@ -14,7 +15,7 @@ class Class1 extends React.Component {
     }
     submit = (e) => {
         e.preventDefault()
-        let move = [...this.state.data, { text: this.state.text, toggle: false }]
+        let move = [...this.state.data, { text: this.state.text, toggle: false, switchInput: false }]
         this.setState({ data: move, text: "" })
     }
     delete = (index) => {
@@ -37,7 +38,23 @@ class Class1 extends React.Component {
 
 
     }
-
+    edit = (index) => {
+        let arr = [...this.state.data]
+        let obj = {...arr[index],switchInput: true} 
+        arr[index] = obj
+        this.setState({data : arr })
+    }
+    changeEdit = (e) => {
+        this.setState({textEdit: e.target.value})
+    }
+    enterEdit =  (index,e) =>{
+        e.preventDefault()
+        let arr = [...this.state.data]
+        let obj = {...arr[index], text: this.state.textEdit,switchInput: false} 
+        arr[index] = obj
+        this.setState({data : arr, textEdit: "" })
+       
+    }
     render() {
         let { data: d, age } = this.props
         let style = {
@@ -64,8 +81,18 @@ class Class1 extends React.Component {
                     <li key={index} className="li" style={{ textDecoration: this.state.data[index].toggle ? "line-through" : "none" }}>
                         <label for={`check${index}`} key={index} >
                             <input onClick={() => this.toggle(index)} type="checkbox" id={`check${index}`} />
-                        {obj.text}</label>
-                        <button onClick={() => this.delete(index)}>x</button></li>)}
+                            { this.state.data[index].switchInput ? <span> {obj.text} <form onSubmit={(e) => this.enterEdit(index,e)}>
+                            <input type="text" onChange={this.changeEdit} />
+                        </form></span>  : obj.text}
+                            
+                        </label>
+                        
+                        <button onClick={() => this.delete(index)}>x</button>
+                        <button onClick={() => this.edit(index)}>edit</button>
+                        
+                        </li>
+
+                )}
             </ul>
         </div>)
     }
@@ -74,6 +101,6 @@ class Class1 extends React.Component {
 export default Class1
 
 
-{/* <input type="checkbox" id="a"/> <label for="a">{.....}</label> */}
-{/* <label> <input /> </label> */}
+{/* <input type="checkbox" id="a"/> <label for="a">{.....}</label> */ }
+{/* <label> <input /> </label> */ }
 
